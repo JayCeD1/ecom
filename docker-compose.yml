@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    container_name: postgres-ecom
+    restart: 'no'
+    environment:
+      POSTGRES_DB: ecom
+      POSTGRES_USER: ecom
+      POSTGRES_PASSWORD: addidas1
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:

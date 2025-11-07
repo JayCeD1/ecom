@@ -1,18 +1,18 @@
 package api
 
 import (
-	"database/sql"
 	"ecom/service/user"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type Server struct {
 	addr string
-	db   *sql.DB
+	db   *gorm.DB
 }
 
-func NewServer(addr string, db *sql.DB) *Server {
+func NewServer(addr string, db *gorm.DB) *Server {
 	return &Server{
 		addr: addr,
 		db:   db,
