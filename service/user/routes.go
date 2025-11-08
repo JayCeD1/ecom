@@ -1,6 +1,7 @@
 package user
 
 import (
+	"ecom/config"
 	"ecom/service/auth"
 	"ecom/types"
 	"ecom/utils"
@@ -22,8 +23,46 @@ func (h *Handler) RegisterRoutes(r fiber.Router) {
 }
 
 func (h *Handler) Login(c *fiber.Ctx) error {
-	return nil
+
+	var payload types.LoginRequest
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	//Validate the payload
+	if err := utils.Validate.Struct(payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+	user, err2 := h.store.GetUserByEmail(payload.Email)
+
+	if err2 != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "invalid email or password",
+		})
+	}
+
+	if !auth.ComparePasswords(user.Password, []byte(payload.Password)) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "invalid email or password",
+		})
+	}
+	secret := []byte(config.Envs.JWTSecret)
+	jwt, err3 := auth.CreateJWT(secret, user.ID)
+
+	if err3 != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err3.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"token": jwt,
+	})
 }
+
 func (h *Handler) Register(c *fiber.Ctx) error {
 
 	var payload types.UserRequest
