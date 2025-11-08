@@ -3,8 +3,8 @@ package user
 import (
 	"ecom/service/auth"
 	"ecom/types"
+	"ecom/utils"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -34,8 +34,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 	}
 
 	//Validate the payload
-	var validate = validator.New()
-	if err := validate.Struct(payload); err != nil {
+	if err := utils.Validate.Struct(payload); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
