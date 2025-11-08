@@ -16,8 +16,8 @@ type User struct {
 	CreatedAt time.Time `json:"createdAt"`
 }
 type UserRequest struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	FirstName string `json:"firstName" validate:"required,min=2,max=255"`
+	LastName  string `json:"lastName" validate:"required,min=2,max=255"`
+	Email     string `json:"email" validate:"required,email,max=255"`
+	Password  string `json:"password" validate:"required,min=8,max=255"`
 }
