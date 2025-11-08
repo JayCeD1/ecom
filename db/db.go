@@ -1,6 +1,7 @@
 package db
 
 import (
+	"ecom/types"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -12,5 +13,11 @@ func NewSQLStorage(cfg postgres.Config) (*gorm.DB, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	er := db.AutoMigrate(&types.User{})
+	if er != nil {
+		log.Fatal(er)
+	}
+
 	return db, nil
 }
