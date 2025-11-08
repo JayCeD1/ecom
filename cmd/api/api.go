@@ -25,8 +25,9 @@ func (s *Server) Run() error {
 	apiV1 := app.Group("/api/v1")
 
 	// mount user routes under /api/v1/users
+	userStore := user.NewStore(s.db)
+	userHandler := user.NewHandler(userStore)
 	userGroup := apiV1.Group("/users")
-	userHandler := user.NewHandler()
 	userHandler.RegisterRoutes(userGroup)
 
 	if err := app.Listen(s.addr); err != nil {
