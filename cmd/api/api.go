@@ -24,7 +24,7 @@ func (s *Server) Run() error {
 	// create a versioned API group
 	apiV1 := app.Group("/api/v1")
 
-	// mount user routes under /api/v1/users
+	// ===== USER ROUTES =====
 	userStore := user.NewStore(s.db)
 	userHandler := user.NewHandler(userStore)
 	userGroup := apiV1.Group("/users")
