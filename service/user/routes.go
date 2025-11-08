@@ -4,6 +4,7 @@ import (
 	"ecom/service/auth"
 	"ecom/types"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -31,6 +32,15 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
+
+	//Validate the payload
+	var validate = validator.New()
+	if err := validate.Struct(payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
 	//check if the user exists
 	if _, err := h.store.GetUserByEmail(payload.Email); err == nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
