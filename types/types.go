@@ -12,6 +12,11 @@ type ProductStore interface {
 	CreateProduct(product *Product) error
 	CheckProduct(name string) (bool, error)
 }
+
+type OrderStore interface {
+	CreateOrder(order Order) (int, error)
+	CreateOrderItem(userID int) ([]*Product, error)
+}
 type User struct {
 	ID        int       `json:"id"`
 	FirstName string    `json:"firstName"`
@@ -29,6 +34,30 @@ type Product struct {
 	Price       float64   `json:"price"`
 	Quantity    int       `json:"quantity"`
 	CreatedAt   time.Time `json:"createdAt"`
+	// Optional: reverse relationship
+	OrderItem []OrderItem `json:"-" gorm:"foreignKey:ProductID"`
+}
+
+type Order struct {
+	ID        int         `json:"id"`
+	UserID    int         `json:"userID"`
+	User      User        `json:"user" gorm:"foreignKey:UserID"`
+	Total     float64     `json:"total"`
+	Status    string      `json:"status"`
+	Address   string      `json:"address"`
+	CreatedAt time.Time   `json:"createdAt"`
+	OrderItem []OrderItem `json:"items" gorm:"foreignKey:OrderID"`
+}
+
+type OrderItem struct {
+	ID        int       `json:"id"`
+	OrderID   int       `json:"orderID"`
+	Order     Order     `json:"order" gorm:"foreignKey:OrderID"`
+	ProductID int       `json:"productID"`
+	Product   Product   `json:"product" gorm:"foreignKey:ProductID"`
+	Quantity  int       `json:"quantity"`
+	Price     float64   `json:"price"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 type UserRequest struct {
 	FirstName string `json:"firstName" validate:"required,min=2,max=255"`
