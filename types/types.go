@@ -9,6 +9,8 @@ type UserStore interface {
 }
 type ProductStore interface {
 	GetProducts() ([]*Product, error)
+	CreateProduct(product *Product) error
+	CheckProduct(name string) (bool, error)
 }
 type User struct {
 	ID        int       `json:"id"`
@@ -33,6 +35,13 @@ type UserRequest struct {
 	LastName  string `json:"lastName" validate:"required,min=2,max=255"`
 	Email     string `json:"email" validate:"required,email,max=255"`
 	Password  string `json:"password" validate:"required,min=8,max=255"`
+}
+
+type ProductRequest struct {
+	Name        string  `json:"name" validate:"required,min=2,max=255"`
+	Description string  `json:"description" validate:"required,min=2,max=255"`
+	Price       float64 `json:"price" validate:"required,min=0.01"`
+	Quantity    int     `json:"quantity" validate:"required,min=1"`
 }
 
 type LoginRequest struct {
