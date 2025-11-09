@@ -1,6 +1,7 @@
 package api
 
 import (
+	"ecom/service/product"
 	"ecom/service/user"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,6 +30,12 @@ func (s *Server) Run() error {
 	userHandler := user.NewHandler(userStore)
 	userGroup := apiV1.Group("/users")
 	userHandler.RegisterRoutes(userGroup)
+
+	// ===== PRODUCT ROUTES =====
+	productStore := product.NewStore(s.db)
+	productHandler := product.NewHandler(productStore)
+	productGroup := apiV1.Group("/products")
+	productHandler.RegisterRoutes(productGroup)
 
 	if err := app.Listen(s.addr); err != nil {
 		return err
