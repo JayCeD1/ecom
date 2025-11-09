@@ -23,6 +23,12 @@ func (s *Store) GetProducts() ([]*types.Product, error) {
 	return products, nil
 }
 
+func (s *Store) GetProductsByID(ids []int) ([]*types.Product, error) {
+	var products []*types.Product
+	s.db.Where("id IN (?)", ids).Find(&products)
+	return products, nil
+}
+
 func (s *Store) CreateProduct(product *types.Product) error {
 	s.db.Create(&product)
 	return nil
