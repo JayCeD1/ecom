@@ -14,7 +14,7 @@ func NewSQLStorage(cfg postgres.Config) (*gorm.DB, error) {
 		log.Fatal(err)
 	}
 
-	er := db.AutoMigrate(&types.User{})
+	er := db.AutoMigrate(&types.User{}, &types.Product{})
 	if er != nil {
 		log.Fatal(er)
 	}
