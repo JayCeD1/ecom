@@ -9,13 +9,15 @@ type UserStore interface {
 }
 type ProductStore interface {
 	GetProducts() ([]*Product, error)
+	GetProductsByID(ids []int) ([]Product, error)
 	CreateProduct(product *Product) error
 	CheckProduct(name string) (bool, error)
+	UpdateProductQuantity(cartItem CartItem) error
 }
 
 type OrderStore interface {
-	CreateOrder(order Order) (int, error)
-	CreateOrderItem(userID int) ([]*Product, error)
+	CreateOrder(order *Order) (int, error)
+	CreateOrderItem(orderItem *OrderItem) (int, error)
 }
 type User struct {
 	ID        int       `json:"id"`
@@ -71,6 +73,14 @@ type ProductRequest struct {
 	Description string  `json:"description" validate:"required,min=2,max=255"`
 	Price       float64 `json:"price" validate:"required,min=0.01"`
 	Quantity    int     `json:"quantity" validate:"required,min=1"`
+}
+
+type CartItem struct {
+	ProductID int `json:"productID"`
+	Quantity  int `json:"quantity"`
+}
+type CartCheckoutRequest struct {
+	Items []CartItem `json:"items" validate:"required"`
 }
 
 type LoginRequest struct {
