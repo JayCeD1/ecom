@@ -80,7 +80,7 @@ type CartItem struct {
 	Quantity  int `json:"quantity" validate:"required,min=1"`
 }
 type CartCheckoutRequest struct {
-	Items []CartItem `json:"items" validate:"required,dive,min=1"`
+	Items []CartItem `json:"items" validate:"required,min=1,dive"`
 }
 
 type LoginRequest struct {
