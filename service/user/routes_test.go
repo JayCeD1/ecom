@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 func TestUserServiceHandlers(t *testing.T) {
@@ -33,7 +33,7 @@ func TestUserServiceHandlers(t *testing.T) {
 		app := fiber.New()
 		api := app.Group("/")
 		handler.RegisterRoutes(api)
-		resp, err := app.Test(req, -1)
+		resp, err := app.Test(req, fiber.TestConfig{Timeout: 0})
 		if err != nil {
 			t.Fatalf("app.Test error: %v", err)
 		}
@@ -63,7 +63,7 @@ func TestUserServiceHandlers(t *testing.T) {
 		app := fiber.New()
 		api := app.Group("/")
 		handler.RegisterRoutes(api)
-		resp, err := app.Test(req, -1)
+		resp, err := app.Test(req, fiber.TestConfig{Timeout: 0})
 		if err != nil {
 			t.Fatalf("app.Test error: %v", err)
 		}

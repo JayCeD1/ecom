@@ -5,7 +5,7 @@ import (
 	"ecom/types"
 	"ecom/utils"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type Handler struct {
@@ -26,7 +26,7 @@ func (h *Handler) RegisterRoutes(r fiber.Router) {
 	r.Post("/checkout", auth.WithJWT(h.Checkout, h.userStore))
 }
 
-func (h *Handler) Checkout(c *fiber.Ctx) error {
+func (h *Handler) Checkout(c fiber.Ctx) error {
 	userID, err := auth.GetUserIDFromContext(c)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -34,7 +34,7 @@ func (h *Handler) Checkout(c *fiber.Ctx) error {
 		})
 	}
 	var cart types.CartCheckoutRequest
-	if err := c.BodyParser(&cart); err != nil {
+	if err := c.Bind().JSON(&cart); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})

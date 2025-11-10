@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -34,7 +34,7 @@ func CreateJWT(secret []byte, userID int) (string, error) {
 
 // WithJWT validates the Authorization: Bearer <token>, loads the user, and sets c.Locals("userID", int)
 func WithJWT(next fiber.Handler, store types.UserStore) fiber.Handler {
-	return func(c *fiber.Ctx) error {
+	return func(c fiber.Ctx) error {
 		// get token from user request
 		tokenStr := getTokenFromRequest(c)
 		// validate the jwt
@@ -66,7 +66,7 @@ func WithJWT(next fiber.Handler, store types.UserStore) fiber.Handler {
 	}
 }
 
-func getTokenFromRequest(c *fiber.Ctx) string {
+func getTokenFromRequest(c fiber.Ctx) string {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 		return ""
@@ -81,7 +81,7 @@ func validateToken(tokenStr string) (*jwt.Token, error) {
 	})
 }
 
-func GetUserIDFromContext(c *fiber.Ctx) (int, error) {
+func GetUserIDFromContext(c fiber.Ctx) (int, error) {
 	userID, ok := c.Locals(UserKey).(int)
 	if !ok {
 		return 0, fiber.ErrNotFound

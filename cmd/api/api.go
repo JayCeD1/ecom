@@ -6,7 +6,7 @@ import (
 	"ecom/service/product"
 	"ecom/service/user"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"gorm.io/gorm"
 )
 

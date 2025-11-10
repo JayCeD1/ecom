@@ -4,7 +4,7 @@ import (
 	"ecom/types"
 	"ecom/utils"
 
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 )
 
 type Handler struct {
@@ -20,7 +20,7 @@ func (h *Handler) RegisterRoutes(r fiber.Router) {
 	r.Post("/", h.CreateProduct)
 }
 
-func (h *Handler) GetProducts(c *fiber.Ctx) error {
+func (h *Handler) GetProducts(c fiber.Ctx) error {
 	products, err := h.store.GetProducts()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -30,9 +30,9 @@ func (h *Handler) GetProducts(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(products)
 }
 
-func (h *Handler) CreateProduct(c *fiber.Ctx) error {
+func (h *Handler) CreateProduct(c fiber.Ctx) error {
 	var payload types.ProductRequest
-	if err := c.BodyParser(&payload); err != nil {
+	if err := c.Bind().JSON(&payload); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
