@@ -17,7 +17,7 @@ type ProductStore interface {
 
 type OrderStore interface {
 	CreateOrder(order *Order) (int, error)
-	CreateOrderItem(orderItem *OrderItem) (int, error)
+	CreateOrderItem(orderItem *OrderItem) error
 }
 type User struct {
 	ID        int       `json:"id"`
@@ -76,11 +76,11 @@ type ProductRequest struct {
 }
 
 type CartItem struct {
-	ProductID int `json:"productID"`
-	Quantity  int `json:"quantity"`
+	ProductID int `json:"productID" validate:"required"`
+	Quantity  int `json:"quantity" validate:"required,min=1"`
 }
 type CartCheckoutRequest struct {
-	Items []CartItem `json:"items" validate:"required"`
+	Items []CartItem `json:"items" validate:"required,dive,min=1"`
 }
 
 type LoginRequest struct {
