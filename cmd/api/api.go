@@ -1,6 +1,8 @@
 package api
 
 import (
+	"ecom/service/cart"
+	"ecom/service/order"
 	"ecom/service/product"
 	"ecom/service/user"
 
@@ -36,6 +38,12 @@ func (s *Server) Run() error {
 	productHandler := product.NewHandler(productStore)
 	productGroup := apiV1.Group("/products")
 	productHandler.RegisterRoutes(productGroup)
+
+	// ===== CART &ORDER ROUTES =====
+	orderStore := order.NewStore(s.db)
+	cartHandler := cart.NewHandler(orderStore, productStore, userStore)
+	cartGroup := apiV1.Group("/cart")
+	cartHandler.RegisterRoutes(cartGroup)
 
 	if err := app.Listen(s.addr); err != nil {
 		return err
