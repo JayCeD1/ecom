@@ -81,8 +81,10 @@ func validateToken(tokenStr string) (*jwt.Token, error) {
 	})
 }
 
-func permissionDenied(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-		"error": "permission denied",
-	})
+func GetUserIDFromContext(c *fiber.Ctx) (int, error) {
+	userID, ok := c.Locals(UserKey).(int)
+	if !ok {
+		return 0, fiber.ErrNotFound
+	}
+	return userID, nil
 }
