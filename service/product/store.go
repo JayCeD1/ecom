@@ -3,6 +3,7 @@ package product
 import (
 	"ecom/types"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -23,8 +24,8 @@ func (s *Store) GetProducts() ([]*types.Product, error) {
 	return products, nil
 }
 
-func (s *Store) GetProductsByID(ids []int) ([]*types.Product, error) {
-	var products []*types.Product
+func (s *Store) GetProductsByID(ids []int) ([]types.Product, error) {
+	var products []types.Product
 	s.db.Where("id IN (?)", ids).Find(&products)
 	return products, nil
 }
@@ -44,4 +45,13 @@ func (s *Store) CheckProduct(name string) (bool, error) {
 		return false, result.Error // some other DB error
 	}
 	return true, nil // product exists
+}
+
+func (s *Store) UpdateProductQuantity(item types.CartItem) error {
+	res := s.db.Model(&types.Product{}).Where("id = ? AND quantity >= ?", item.ProductID, item.Quantity).UpdateColumn("quantity", gorm.Expr("quantity - ?", item.Quantity))
+
+	if res.RowsAffected == 0 {
+		return fmt.Errorf("product %d not updated: insufficient stock", item.ProductID)
+	}
+	return res.Error
 }
