@@ -25,7 +25,7 @@ func (s *Store) CreateOrder(order *types.Order) (int, error) {
 	return order.ID, nil
 }
 
-func (s *Store) CreateOrderItem(orderItem types.OrderItem) error {
+func (s *Store) CreateOrderItem(orderItem *types.OrderItem) error {
 	result := s.db.Create(&orderItem)
 	return result.Error
 }

@@ -30,8 +30,6 @@ func (h *Handler) createOrder(products []types.Product, items []types.CartItem, 
 	totalPrice := calculateTotalPrice(items, productMap)
 	// reduce quantity of products in db
 	for _, item := range items {
-		product := productMap[item.ProductID]
-		item.Quantity = product.Quantity - item.Quantity
 
 		if err := h.productStore.UpdateProductQuantity(item); err != nil {
 			return 0, 0, err
