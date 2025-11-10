@@ -47,14 +47,14 @@ func (h *Handler) createOrder(products []types.Product, items []types.CartItem, 
 	}
 	// create order items
 	for _, item := range items {
-		_, err2 := h.store.CreateOrderItem(&types.OrderItem{
+		err := h.store.CreateOrderItem(&types.OrderItem{
 			OrderID:   orderID,
 			ProductID: item.ProductID,
 			Quantity:  item.Quantity,
 			Price:     productMap[item.ProductID].Price,
 		})
-		if err2 != nil {
-			return 0, 0, err2
+		if err != nil {
+			return 0, 0, err
 		}
 	}
 	return orderID, totalPrice, nil
