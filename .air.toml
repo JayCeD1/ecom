@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
   args_bin = []
   bin = "./bin/ecom"
-  cmd = "go build -o ./bin/ecom ./cmd/main.go"
+  cmd = "make build"
   delay = 1000
   exclude_dir = ["assets", "bin", "vendor", "testdata","web","scripts","docs"]
   exclude_file = []
