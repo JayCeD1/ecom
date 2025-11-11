@@ -13,6 +13,7 @@ import (
 type Server struct {
 	addr string
 	db   *gorm.DB
+	App  *fiber.App
 }
 
 func NewServer(addr string, db *gorm.DB) *Server {
@@ -22,10 +23,10 @@ func NewServer(addr string, db *gorm.DB) *Server {
 	}
 }
 func (s *Server) Run() error {
-	app := fiber.New()
+	s.App = fiber.New()
 
 	// create a versioned API group
-	apiV1 := app.Group("/api/v1")
+	apiV1 := s.App.Group("/api/v1")
 
 	// ===== USER ROUTES =====
 	userStore := user.NewStore(s.db)
@@ -45,7 +46,7 @@ func (s *Server) Run() error {
 	cartGroup := apiV1.Group("/cart")
 	cartHandler.RegisterRoutes(cartGroup)
 
-	if err := app.Listen(s.addr); err != nil {
+	if err := s.App.Listen(s.addr); err != nil {
 		return err
 	}
 	return nil
