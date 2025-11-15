@@ -37,7 +37,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	user, err2 := h.store.GetUserByEmail(payload.Email)
+	user, err2 := h.store.GetUserByEmail(payload.Email, c.UserContext())
 
 	if err2 != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -80,7 +80,7 @@ func (h *Handler) Register(c *fiber.Ctx) error {
 	}
 
 	//check if the user exists
-	if _, err := h.store.GetUserByEmail(payload.Email); err == nil {
+	if _, err := h.store.GetUserByEmail(payload.Email, c.UserContext()); err == nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "user already exists",
 		})

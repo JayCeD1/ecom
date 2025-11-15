@@ -1,10 +1,13 @@
 package types
 
-import "time"
+import (
+	"context"
+	"time"
+)
 
 type UserStore interface {
 	CreateUser(user *User) error
-	GetUserByEmail(email string) (*User, error)
+	GetUserByEmail(email string, ctx context.Context) (*User, error)
 	GetUserByID(id int) (*User, error)
 }
 type ProductStore interface {

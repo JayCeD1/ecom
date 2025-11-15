@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"ecom/types"
 	"fmt"
 
@@ -17,9 +18,9 @@ func NewStore(db *gorm.DB) *Store {
 	}
 }
 
-func (s *Store) GetUserByEmail(email string) (*types.User, error) {
+func (s *Store) GetUserByEmail(email string, ctx context.Context) (*types.User, error) {
 	var user types.User
-	s.db.Where("email = ?", email).First(&user)
+	s.db.WithContext(ctx).Where("email = ?", email).First(&user)
 
 	if user.ID == 0 {
 		return nil, fmt.Errorf("user not found")
