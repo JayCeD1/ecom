@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"ecom/cmd/api"
 	"ecom/config"
 	"ecom/db"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"gorm.io/driver/postgres"
 )
@@ -40,9 +42,18 @@ func main() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	go func() {
-		<-c
+		<-c // 1. Wait for signal (Ctrl+C or K8s SIGTERM)
 		log.Println("Gracefully Shutting down...")
-		_ = server.App.Shutdown()
+
+		// Give Fiber time to finish requests
+		// 2. Create a timeout context (10-second max)
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel() // 3. Cleanup context when done
+
+		// 4. Tell Fiber to shut down with timeout
+		if err = server.App.ShutdownWithContext(ctx); err != nil {
+			log.Printf("Server forced to shutdown: %v", err)
+		}
 	}()
 
 	if err := server.Run(); err != nil {
