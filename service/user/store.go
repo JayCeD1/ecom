@@ -28,9 +28,9 @@ func (s *Store) GetUserByEmail(ctx context.Context, email string) (*types.User, 
 	return &user, nil
 }
 
-func (s *Store) GetUserByID(id int) (*types.User, error) {
+func (s *Store) GetUserByID(ctx context.Context, id int) (*types.User, error) {
 	var user types.User
-	s.db.Where("id = ?", id).First(&user)
+	s.db.WithContext(ctx).Where("id = ?", id).First(&user)
 
 	if user.ID == 0 {
 		return nil, fmt.Errorf("user not found")
@@ -38,7 +38,7 @@ func (s *Store) GetUserByID(id int) (*types.User, error) {
 	return &user, nil
 }
 
-func (s *Store) CreateUser(user *types.User) error {
-	s.db.Create(&user)
+func (s *Store) CreateUser(ctx context.Context, user *types.User) error {
+	s.db.WithContext(ctx).Create(&user)
 	return nil
 }
