@@ -6,21 +6,21 @@ import (
 )
 
 type UserStore interface {
-	CreateUser(user *User) error
+	CreateUser(ctx context.Context, user *User) error
 	GetUserByEmail(ctx context.Context, email string) (*User, error)
-	GetUserByID(id int) (*User, error)
+	GetUserByID(ctx context.Context, id int) (*User, error)
 }
 type ProductStore interface {
-	GetProducts() ([]*Product, error)
-	GetProductsByID(ids []int) ([]Product, error)
-	CreateProduct(product *Product) error
-	CheckProduct(name string) (bool, error)
-	UpdateProductQuantity(cartItem CartItem) error
+	GetProducts(ctx context.Context) ([]*Product, error)
+	GetProductsByID(ctx context.Context, ids []int) ([]Product, error)
+	CreateProduct(ctx context.Context, product *Product) error
+	CheckProduct(ctx context.Context, name string) (bool, error)
+	UpdateProductQuantity(ctx context.Context, cartItem CartItem) error
 }
 
 type OrderStore interface {
-	CreateOrder(order *Order) (int, error)
-	CreateOrderItem(orderItem *OrderItem) error
+	CreateOrder(ctx context.Context, order *Order) (int, error)
+	CreateOrderItem(ctx context.Context, orderItem *OrderItem) error
 }
 type User struct {
 	ID        int       `json:"id"`
