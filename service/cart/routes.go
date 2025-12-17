@@ -51,9 +51,9 @@ func (h *Handler) Checkout(c *fiber.Ctx) error {
 			"error": err.Error(),
 		})
 	}
-	products, err := h.productStore.GetProductsByID(productIDs)
+	products, err := h.productStore.GetProductsByID(c.Context(), productIDs)
 	// create order
-	orderID, amount, err := h.createOrder(products, cart.Items, userID)
+	orderID, amount, err := h.createOrder(c.Context(), products, cart.Items, userID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
