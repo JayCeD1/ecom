@@ -1,6 +1,7 @@
 package cart
 
 import (
+	"context"
 	"ecom/types"
 	"fmt"
 )
@@ -17,7 +18,7 @@ func getCartItemIDs(items []types.CartItem) ([]int, error) {
 	return productIds, nil
 }
 
-func (h *Handler) createOrder(products []types.Product, items []types.CartItem, userID int) (int, float64, error) {
+func (h *Handler) createOrder(ctx context.Context, products []types.Product, items []types.CartItem, userID int) (int, float64, error) {
 	productMap := make(map[int]types.Product)
 	for _, product := range products {
 		productMap[product.ID] = product
@@ -31,12 +32,12 @@ func (h *Handler) createOrder(products []types.Product, items []types.CartItem, 
 	// reduce quantity of products in db
 	for _, item := range items {
 
-		if err := h.productStore.UpdateProductQuantity(item); err != nil {
+		if err := h.productStore.UpdateProductQuantity(ctx, item); err != nil {
 			return 0, 0, err
 		}
 	}
 	// create order
-	orderID, err := h.store.CreateOrder(&types.Order{
+	orderID, err := h.store.CreateOrder(ctx, &types.Order{
 		UserID:  userID,
 		Total:   totalPrice,
 		Status:  "pending",
@@ -47,7 +48,7 @@ func (h *Handler) createOrder(products []types.Product, items []types.CartItem, 
 	}
 	// create order items
 	for _, item := range items {
-		err := h.store.CreateOrderItem(&types.OrderItem{
+		err := h.store.CreateOrderItem(ctx, &types.OrderItem{
 			OrderID:   orderID,
 			ProductID: item.ProductID,
 			Quantity:  item.Quantity,
