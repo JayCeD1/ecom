@@ -21,7 +21,7 @@ func (h *Handler) RegisterRoutes(r fiber.Router) {
 }
 
 func (h *Handler) GetProducts(c *fiber.Ctx) error {
-	products, err := h.store.GetProducts()
+	products, err := h.store.GetProducts(c.UserContext())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
@@ -45,7 +45,7 @@ func (h *Handler) CreateProduct(c *fiber.Ctx) error {
 		})
 	}
 	//Check if the product exists
-	isAvailable, err := h.store.CheckProduct(payload.Name)
+	isAvailable, err := h.store.CheckProduct(c.UserContext(), payload.Name)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": err.Error(),
@@ -57,7 +57,7 @@ func (h *Handler) CreateProduct(c *fiber.Ctx) error {
 			"error": "product already exists",
 		})
 	}
-	err2 := h.store.CreateProduct(&types.Product{
+	err2 := h.store.CreateProduct(c.UserContext(), &types.Product{
 		Name:        payload.Name,
 		Price:       payload.Price,
 		Description: payload.Description,
