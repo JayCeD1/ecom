@@ -7,7 +7,7 @@ import (
 
 type UserStore interface {
 	CreateUser(user *User) error
-	GetUserByEmail(email string, ctx context.Context) (*User, error)
+	GetUserByEmail(ctx context.Context, email string) (*User, error)
 	GetUserByID(id int) (*User, error)
 }
 type ProductStore interface {

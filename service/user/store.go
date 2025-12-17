@@ -18,7 +18,7 @@ func NewStore(db *gorm.DB) *Store {
 	}
 }
 
-func (s *Store) GetUserByEmail(email string, ctx context.Context) (*types.User, error) {
+func (s *Store) GetUserByEmail(ctx context.Context, email string) (*types.User, error) {
 	var user types.User
 	s.db.WithContext(ctx).Where("email = ?", email).First(&user)
 
