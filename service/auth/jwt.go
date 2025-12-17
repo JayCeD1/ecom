@@ -56,7 +56,7 @@ func WithJWT(next fiber.Handler, store types.UserStore) fiber.Handler {
 
 		// if we need to fetch the user from the database, do it
 		// Optional: ensure user still exists
-		if _, err2 := store.GetUserByID(uid); err2 != nil {
+		if _, err2 := store.GetUserByID(c.UserContext(), uid); err2 != nil {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "user not found"})
 		}
 
