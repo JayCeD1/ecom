@@ -1,6 +1,7 @@
 package order
 
 import (
+	"context"
 	"ecom/types"
 
 	"gorm.io/gorm"
@@ -16,8 +17,8 @@ func NewStore(db *gorm.DB) *Store {
 	}
 }
 
-func (s *Store) CreateOrder(order *types.Order) (int, error) {
-	result := s.db.Create(&order)
+func (s *Store) CreateOrder(ctx context.Context, order *types.Order) (int, error) {
+	result := s.db.WithContext(ctx).Create(&order)
 
 	if result.Error != nil {
 		return 0, result.Error
@@ -25,7 +26,7 @@ func (s *Store) CreateOrder(order *types.Order) (int, error) {
 	return order.ID, nil
 }
 
-func (s *Store) CreateOrderItem(orderItem *types.OrderItem) error {
-	result := s.db.Create(&orderItem)
+func (s *Store) CreateOrderItem(ctx context.Context, orderItem *types.OrderItem) error {
+	result := s.db.WithContext(ctx).Create(&orderItem)
 	return result.Error
 }
